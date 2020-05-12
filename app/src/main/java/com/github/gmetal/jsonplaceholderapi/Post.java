@@ -1,10 +1,16 @@
 package com.github.gmetal.jsonplaceholderapi;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Post {
 
+    @SerializedName("id")
     private int id;
+    @SerializedName("userId")
     private int userId;
+    @SerializedName("title")
     private String title;
+    @SerializedName("body")
     private String body;
 
     public Post(final int id, final int userId, final String title, final String body) {
