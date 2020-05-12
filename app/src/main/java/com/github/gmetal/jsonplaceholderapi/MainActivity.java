@@ -10,6 +10,9 @@ import java.util.List;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -18,6 +21,46 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        final RecyclerView postsList = findViewById(R.id.postsList);
+        postsList.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(final View v) {
+
+                Toast.makeText(MainActivity.this, "asdf", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        postsList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+
+        JSONPlaceholderService serviceInstance = RetrofitClientSingleton.getInstance().getRetrofit().create(JSONPlaceholderService.class);
+        final Call<List<Post>> allPosts = serviceInstance.getAllPosts();
+        allPosts.enqueue(new Callback<List<Post>>() {
+
+            @Override
+            public void onResponse(final Call<List<Post>> call, final Response<List<Post>> response) {
+
+                final List<Post> posts = response.body();
+                postsList.setAdapter(new PostsAdapter(MainActivity.this, posts, MainActivity.this));
+            }
+
+            @Override
+            public void onFailure(final Call<List<Post>> call, final Throwable t) {
+
+                Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public void onClick(final View v) {
+
+        Post currentPost = (Post) v.getTag();
+        Toast.makeText(this, currentPost.getTitle(), Toast.LENGTH_SHORT).show();
+    }
+
+    private List<Post> getFakeData() {
 
         List<Post> posts = new ArrayList<>();
         posts.add(
@@ -41,15 +84,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 )
         );
 
-        final RecyclerView postsList = findViewById(R.id.postsList);
-        postsList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        postsList.setAdapter(new PostsAdapter(this, posts, this));
-    }
-
-    @Override
-    public void onClick(final View v) {
-
-        Post currentPost = (Post) v.getTag();
-        Toast.makeText(this, currentPost.getTitle(), Toast.LENGTH_SHORT).show();
+        return posts;
     }
 }
