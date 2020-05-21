@@ -1,5 +1,7 @@
 package com.github.gmetal.jsonplaceholderapi;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -16,22 +18,19 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        progressDialog = new ProgressDialog(MainActivity.this);
+        progressDialog.setMessage("Fetching data....");
+        progressDialog.show();
+
         final RecyclerView postsList = findViewById(R.id.postsList);
-        postsList.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(final View v) {
-
-                Toast.makeText(MainActivity.this, "asdf", Toast.LENGTH_SHORT).show();
-            }
-        });
-
         postsList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
         JSONPlaceholderService serviceInstance = RetrofitClientSingleton.getInstance().getRetrofit().create(JSONPlaceholderService.class);
@@ -42,12 +41,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onResponse(final Call<List<Post>> call, final Response<List<Post>> response) {
 
                 final List<Post> posts = response.body();
+                progressDialog.dismiss();
                 postsList.setAdapter(new PostsAdapter(MainActivity.this, posts, MainActivity.this));
             }
 
             @Override
             public void onFailure(final Call<List<Post>> call, final Throwable t) {
 
+                progressDialog.dismiss();
                 Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -57,7 +58,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(final View v) {
 
         Post currentPost = (Post) v.getTag();
-        Toast.makeText(this, currentPost.getTitle(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, PostActivity.class);
+        intent.putExtra(PostActivity.POST_ID_EXTRA, currentPost.getId());
+
+        startActivity(intent);
     }
 
     private List<Post> getFakeData() {
