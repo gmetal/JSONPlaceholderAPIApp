@@ -45,7 +45,6 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
 
         final Post currentPost = mData.get(position);
         holder.postTitle.setText(currentPost.getTitle());
-        holder.postBody.setText(currentPost.getBody());
 
         holder.itemView.setTag(currentPost);
         holder.itemView.setOnClickListener(mOnClickListener);
@@ -54,13 +53,11 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView postTitle;
-        TextView postBody;
 
         public ViewHolder(@NonNull final View itemView) {
 
             super(itemView);
             postTitle = itemView.findViewById(R.id.postTitle);
-            postBody = itemView.findViewById(R.id.postBody);
         }
     }
 }
