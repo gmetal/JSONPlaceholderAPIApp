@@ -1,9 +1,10 @@
 package com.github.gmetal.jsonplaceholderapi;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -18,7 +19,9 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private ProgressDialog progressDialog;
+    private ProgressBar mLoader;
+    private RecyclerView mPostsList;
+    private TextView mLoadingTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,12 +29,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        progressDialog = new ProgressDialog(MainActivity.this);
-        progressDialog.setMessage("Fetching data....");
-        progressDialog.show();
-
-        final RecyclerView postsList = findViewById(R.id.postsList);
-        postsList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        mLoader = findViewById(R.id.loader);
+        mLoadingTextView = findViewById(R.id.loading_text);
+        mPostsList = findViewById(R.id.postsList);
+        mPostsList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
         JSONPlaceholderService serviceInstance = RetrofitClientSingleton.getInstance().getRetrofit().create(JSONPlaceholderService.class);
         final Call<List<Post>> allPosts = serviceInstance.getAllPosts();
@@ -41,14 +42,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onResponse(final Call<List<Post>> call, final Response<List<Post>> response) {
 
                 final List<Post> posts = response.body();
-                progressDialog.dismiss();
-                postsList.setAdapter(new PostsAdapter(MainActivity.this, posts, MainActivity.this));
+                mLoader.setVisibility(View.GONE);
+                mLoadingTextView.setVisibility(View.GONE);
+                mPostsList.setVisibility(View.VISIBLE);
+
+                mPostsList.setAdapter(new PostsAdapter(MainActivity.this, posts, MainActivity.this));
             }
 
             @Override
             public void onFailure(final Call<List<Post>> call, final Throwable t) {
 
-                progressDialog.dismiss();
+                mLoader.setVisibility(View.GONE);
+                mLoadingTextView.setVisibility(View.GONE);
+                mPostsList.setVisibility(View.VISIBLE);
                 Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
