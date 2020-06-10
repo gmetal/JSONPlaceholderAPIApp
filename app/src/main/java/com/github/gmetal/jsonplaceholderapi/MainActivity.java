@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Post currentPost = (Post) v.getTag();
         Intent intent = new Intent(this, PostActivity.class);
         intent.putExtra(PostActivity.POST_ID_EXTRA, currentPost.getId());
-
+        intent.putExtra(PostActivity.USER_ID_EXTRA, currentPost.getUserId());
         startActivity(intent);
     }
 

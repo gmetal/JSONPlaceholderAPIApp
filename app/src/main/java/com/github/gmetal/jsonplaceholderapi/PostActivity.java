@@ -16,10 +16,11 @@ import retrofit2.Response;
 public class PostActivity extends AppCompatActivity {
 
     public static final String POST_ID_EXTRA = "post_id";
+    public static final String USER_ID_EXTRA = "user_id";
 
     private ProgressDialog progressDialog;
     private TextView postIdTextView;
-    private TextView userIdTextView;
+    private Button viewUserDetailsButtton;
     private TextView titleTextView;
     private TextView bodyTextView;
 
@@ -30,13 +31,14 @@ public class PostActivity extends AppCompatActivity {
         setContentView(R.layout.activity_post);
 
         final int postId = getIntent().getIntExtra(POST_ID_EXTRA, 0);
+        final int userId = getIntent().getIntExtra(USER_ID_EXTRA, 0);
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Loading post...");
         progressDialog.show();
 
         postIdTextView = findViewById(R.id.postIdLabel);
-        userIdTextView = findViewById(R.id.userIdLabel);
+        viewUserDetailsButtton = findViewById(R.id.viewUserDetails);
         titleTextView = findViewById(R.id.postTitle);
         bodyTextView = findViewById(R.id.postBody);
 
@@ -51,6 +53,19 @@ public class PostActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        viewUserDetailsButtton.setOnClickListener(
+                new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(final View v) {
+
+                        Intent intent = new Intent(PostActivity.this, UserActivity.class);
+                        intent.putExtra(UserActivity.USER_ID_EXTRA, userId);
+                        startActivity(intent);
+                    }
+                }
+        );
 
         JSONPlaceholderService serviceInstance = RetrofitClientSingleton.getInstance().getRetrofit().create(JSONPlaceholderService.class);
         final Call<Post> postById = serviceInstance.getPostById(postId);
@@ -76,7 +91,7 @@ public class PostActivity extends AppCompatActivity {
     private void updateUi(final Post post) {
 
         postIdTextView.setText(getString(R.string.post_id_label, post.getId()));
-        userIdTextView.setText(getString(R.string.user_id_label, post.getUserId()));
+        viewUserDetailsButtton.setText(getString(R.string.user_id_label, post.getUserId()));
         titleTextView.setText(getString(R.string.title_label, post.getTitle()));
         bodyTextView.setText(getString(R.string.body_label, post.getBody()));
     }

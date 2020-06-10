@@ -20,17 +20,6 @@
         />
 
     <TextView
-        android:id="@+id/userIdLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/default_margin"
-        android:layout_marginTop="@dimen/default_margin"
-        android:text="@string/user_id_label"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/postIdLabel"
-        />
-
-    <TextView
         android:id="@+id/postTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -40,7 +29,7 @@
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/userIdLabel"
+        app:layout_constraintTop_toBottomOf="@+id/postIdLabel"
         />
 
     <TextView
@@ -58,6 +47,18 @@
         />
 
     <Button
+        android:id="@+id/viewUserDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/default_margin"
+        android:layout_marginBottom="@dimen/default_margin"
+        android:text="@string/user_id_label"
+        app:layout_constraintBottom_toTopOf="@+id/viewCommentsButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <Button
         android:id="@+id/viewCommentsButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -67,6 +68,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
